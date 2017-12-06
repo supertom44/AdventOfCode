@@ -1,0 +1,8 @@
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\bin\Debug\CSharp.dll
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\bin\Debug\CSharp.pdb
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\bin\Debug\nunit.framework.dll
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\bin\Debug\nunit.framework.xml
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\obj\Debug\CSharp.csprojResolveAssemblyReference.cache
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\obj\Debug\CSharp.csproj.CoreCompileInputs.cache
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\obj\Debug\CSharp.dll
+D:\Projects\AdventOfCode\2017\F#\AdventOfCode\CSharp\obj\Debug\CSharp.pdb
