@@ -28,3 +28,8 @@ while areThereNoDuplicates(configs):
 
 
 print(cycles)
+
+dupes = [k for k, v in Counter(configs).items() if v > 1]
+firstOc = configs.index(dupes[0])
+
+print(cycles - 1 - firstOc)
