@@ -48,6 +48,9 @@ module Day8App =
                 (Map.add commandRegistar value registars, List.append [value] values )
             | _ -> failwith "Something went wrong"
         
+    let SolveExpPart1 input = 
+    
+     ()
         
 
     let SolvePart1 (input:string) =
