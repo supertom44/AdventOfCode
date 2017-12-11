@@ -34,17 +34,10 @@ module Day11App =
             Seq.length (getOrEmpty "sw" moves) +
             Seq.length (getOrEmpty "nw" moves)
 
-        let northMoves = norths - souths
-        let eastMoves = easts - wests
+        let y = norths - souths
+        let x = easts - wests
 
-        if northMoves = eastMoves
-        then abs northMoves
-        elif northMoves = 0
-        then abs eastMoves
-        elif eastMoves = 0
-        then abs northMoves
-        else
-        abs(northMoves + eastMoves) / 2
+        (abs x + abs (x + y) + abs (y)) / 2
     
 
     
