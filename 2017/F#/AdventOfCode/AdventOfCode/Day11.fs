@@ -9,35 +9,41 @@ module Day11App =
         match result with 
         | Some v -> v
         | None -> Seq.empty
+
+    type State = { Position : (int * int); Steps:int list}
+
+    let move co (state:State) = 
+        let x,y = state.Position
+        let newPos = 
+            match co with
+            | "n" -> (x,y + 1)
+            | "e" -> (x + 1, y)
+            | "s" -> (x, y - 1)
+            | "w" -> (x - 1, y)
+            | "ne" -> (x + 1, y)
+            | "nw" -> (x - 1, y + 1)
+            | "se" -> (x + 1, y - 1)
+            | "sw" -> (x - 1, y)
+
+        let a,b = newPos
+        let steps = (abs a + abs (a + b) + abs (b)) / 2
+        { state with Position = newPos; Steps = steps :: state.Steps}
+    
+    let init = { Position = (0,0); Steps = List.empty }
     
     let SolvePart1 (input:string) = 
-        let moves = 
+        let solution = 
             input.Split(',')
-            |> Seq.groupBy(fun x -> x)
-            |> Map.ofSeq
+            |> Seq.fold(fun state co -> move co state) init
 
-        let norths = 
-            Seq.length (getOrEmpty "n" moves) +
-            Seq.length (getOrEmpty "ne" moves) +
-            Seq.length (getOrEmpty "nw" moves)
+        List.head solution.Steps
 
-        let souths = 
-            Seq.length (getOrEmpty "s" moves) +
-            Seq.length (getOrEmpty "se" moves) +
-            Seq.length (getOrEmpty "sw" moves)
+    let SolvePart2 (input:string) = 
+        let solution = 
+            input.Split(',')
+            |> Seq.fold(fun state co -> move co state) init
 
-        let easts = 
-            Seq.length (getOrEmpty "ne" moves) +
-            Seq.length (getOrEmpty "se" moves)
-
-        let wests = 
-            Seq.length (getOrEmpty "sw" moves) +
-            Seq.length (getOrEmpty "nw" moves)
-
-        let y = norths - souths
-        let x = easts - wests
-
-        (abs x + abs (x + y) + abs (y)) / 2
+        List.max solution.Steps
     
 
     
@@ -54,7 +60,10 @@ module Day11Tests =
 
     [<Test>]
     let ``Solve Part 1`` () = 
-        //Too Low
-        Assert.That(Day11App.SolvePart1 problem, Is.EqualTo(582))
+        Assert.That(Day11App.SolvePart1 problem, Is.EqualTo(810))
+
+    [<Test>]
+    let ``Solve Part 2`` () = 
+        Assert.That(Day11App.SolvePart2 problem, Is.EqualTo(1567))
 
     
