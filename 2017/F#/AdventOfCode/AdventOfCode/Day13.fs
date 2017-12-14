@@ -8,22 +8,23 @@ module Day13App =
     let parseInput (input:string) = 
         input.Split('\n')
         |> Seq.map(fun x -> x.Split([|": "|], StringSplitOptions.None))
-        |> Seq.map(fun x ->(int (Array.head x), int (Array.last x)))
+        |> Seq.map(fun x ->(int (x.[0]), int (x.[1])))
                 
-    
+    let findCaughtPositions (data:seq<int*int>) offset = 
+        data 
+        |> Seq.choose(fun (i, x) -> if (i + offset) % (2 * x - 2) = 0 then Some (i,x) else None)
+
     let SolvePart1 (input:string) offset =         
         let data = parseInput input
-        let x = data |> Seq.choose(fun (i, x) -> if (i + offset) % ((x - 1) * 2) = 0 then Some (i,x) else None)
+        let x = findCaughtPositions data offset
         x |> Seq.sumBy(fun (i,d) -> i * d)
 
 
     let SolvePart2 (input:string) = 
-        Seq.initInfinite (id)
-        |> Seq.takeWhile(fun x -> (SolvePart1 input x) > 0)
-        |> Seq.last
-
-
-    
+        let data = parseInput input
+        Seq.initInfinite (fun x -> x)
+        |> Seq.takeWhile(fun x -> Seq.length (findCaughtPositions data x) > 0)
+        |> Seq.length    
 
     
 module Day13Tests =
@@ -88,4 +89,8 @@ module Day13Tests =
 
     [<Test>]
     let ``Solve part 1 `` () =
-        Assert.That(Day13App.SolvePart1 problem, Is.EqualTo(788))
+        Assert.That(Day13App.SolvePart1 problem 0, Is.EqualTo(788))
+
+    [<Test>]
+    let ``Solve part 2`` () =
+        Assert.That(Day13App.SolvePart2 problem, Is.EqualTo(3905748))
