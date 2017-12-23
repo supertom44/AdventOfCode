@@ -6,7 +6,7 @@ open System
 module Day18App =
 
     let (|Int|_|) str =
-        match System.Int32.TryParse(str) with
+        match System.Int64.TryParse(str) with
         | (true,int) -> Some(int)
         | _ -> None
 
@@ -19,15 +19,15 @@ module Day18App =
     | Jump of string * string
     | Send of char
 
-    let getValueOfRegistar (input:string) (registars : Map<char,int>) = 
+    let getValueOfRegistar (input:string) (registars : Map<char,int64>) = 
         match input with
         | Int i -> i
         | _ -> registars.[input.ToCharArray().[0]]
 
-    let getValueOrEmpty (registar:char) (registars:Map<char,int>) = 
+    let getValueOrEmpty (registar:char) (registars:Map<char,int64>) = 
         match Map.tryFind registar registars with 
         | Some x -> x
-        | None -> 0
+        | None -> 0L
 
     let toChar (input:string) = 
         input.ToCharArray().[0]
@@ -35,22 +35,24 @@ module Day18App =
     let set registar value = 
         Map.add registar value
 
-    let add (registar:char) value (registars: Map<char,int>) =
+    let add (registar:char) value (registars: Map<char,int64>) =
         Map.add registar ((getValueOrEmpty registar registars) + value) registars
 
-    let multiply (registar:char) value (registars: Map<char,int>) =
+    let multiply (registar:char) value (registars: Map<char,int64>) =
         Map.add registar ((getValueOrEmpty registar registars) * value) registars
 
-    let modulos (registar:char) value (registars: Map<char,int>) =
+    let modulos (registar:char) value (registars: Map<char,int64>) =
         Map.add registar ((getValueOrEmpty registar registars) % value) registars
 
-    let recover (registar:char) (registars: Map<char,int>) =
-        let value = (getValueOrEmpty registar registars)
-        if value > 0
-        then Some value
+    let recover (registar:char) (registars: Map<char,int64>) =
+        let value = (getValueOrEmpty registar registars)       
+        if value > 0L
+        then
+            printfn "RECOVER: %c" registar
+            Some value
         else None
 
-    let jump condition offset =
+    let jump condition (offset:int) =
         if condition > 0
         then offset
         else 1
@@ -67,7 +69,7 @@ module Day18App =
         | [|"snd"; x|] -> Send (toChar x)
         | _ -> failwith "Unknown Part"
 
-    type State = { Registars : Map<char,int>; CurrentIndex : int; Recovered : int option; LastPlayed : int}
+    type State = { Registars : Map<char,int64>; CurrentIndex : int; Recovered : int64 option; LastPlayed : int64}
 
     let playInstruction (instruction: Instruction) (state:State) = 
         match instruction with 
@@ -75,9 +77,9 @@ module Day18App =
         | Add (x,y) -> { state with Registars = add x (getValueOfRegistar y state.Registars) state.Registars; CurrentIndex = state.CurrentIndex + 1 }
         | Mulitply (x,y) -> { state with Registars = multiply x (getValueOfRegistar y state.Registars) state.Registars; CurrentIndex = state.CurrentIndex + 1 }
         | Modulos (x,y) -> { state with Registars = modulos x (getValueOfRegistar y state.Registars) state.Registars; CurrentIndex = state.CurrentIndex + 1 }
-        | Jump (x,y) -> { state with CurrentIndex = state.CurrentIndex + (jump (getValueOfRegistar x state.Registars) (getValueOfRegistar y state.Registars))}
+        | Jump (x,y) -> { state with CurrentIndex = state.CurrentIndex + (jump (int(getValueOfRegistar x state.Registars)) (int(getValueOfRegistar y state.Registars)))}
         | Recover (x) -> { state with Recovered = recover x state.Registars; CurrentIndex = state.CurrentIndex + 1 }
-        | Send x -> { state with LastPlayed = state.Registars.[x]; CurrentIndex = state.CurrentIndex + 1 }
+        | Send x -> printfn "Send: %i" state.Registars.[x]; { state with LastPlayed = state.Registars.[x]; CurrentIndex = state.CurrentIndex + 1 }
 
     let SolvePart1 (rawInstructions: string) =
         let instructions = 
@@ -91,8 +93,8 @@ module Day18App =
             | Some _ -> newState.LastPlayed
             | None -> play newState
 
-        play { Registars = Map.empty; CurrentIndex = 0; Recovered = None; LastPlayed = 0 }
-
+        play { Registars = Map.empty; CurrentIndex = 0; Recovered = None; LastPlayed = 0L }
+        
 
     
 module Day18Tests =
